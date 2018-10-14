@@ -1,0 +1,3 @@
+ansible_become_pass: "{{ main_ansible_user.password }}"
+ansible_python_interpreter: /usr/bin/python3
+sshd_config: /etc/ssh/sshd_config
