@@ -1,0 +1,41 @@
+- name: Create ansible's user
+  user:
+    name: "{{ main_ansible_user.name }}"
+    password: "{{ main_ansible_user.password }}"
+    comment: Controlled by ansible controller setting the state of this host
+    group: sudo
+
+- name: Setup authorized_keys for ansible's user
+  authorized_key:
+    user: "{{ main_ansible_user.name }}"
+    key: "{{ main_ansible_user.public_ssh_key }}"
+    exclusive: yes
+  check_mode: no
+
+- name: Disable login with no password
+  lineinfile: 
+    dest: "{{ sshd_config }}"
+    regexp: ^#?PermitEmptyPasswords
+    line: PermitEmptyPasswords no
+  notify: restart ssh
+
+- name: Disable remote root login
+  lineinfile: 
+    dest: "{{ sshd_config }}"
+    regexp: ^#?PermitRootLogin
+    line: PermitRootLogin no
+  notify: restart ssh
+
+- name: Disable login by password 
+  lineinfile:
+    dest: "{{ sshd_config }}"
+    regexp: ^#?PasswordAuthentication 
+    line: PasswordAuthentication no
+  notify: restart ssh
+
+- name: Enable pluggable authentication module
+  lineinfile: 
+    dest: "{{ sshd_config }}"
+    regexp: ^#?UsePAM
+    line: UsePAM yes
+  notify: restart ssh
