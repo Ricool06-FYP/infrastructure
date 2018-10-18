@@ -1,7 +1,7 @@
 - name: Create ansible's user
   user:
     name: "{{ main_ansible_user.name }}"
-    password: "{{ main_ansible_user.password }}"
+    password: "{{ main_ansible_user.hashed_password }}"
     comment: Controlled by ansible controller setting the state of this host
     group: sudo
 
